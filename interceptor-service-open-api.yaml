@@ -1,0 +1,51 @@
+openapi: 3.0.0
+servers:
+  - url: "{interceptor_service_url}/api/v1"
+    variables:
+      interceptor_service_url:
+        default: https://interceptor-service:8443
+        description: interceptor_host assigned by the service provider
+info:
+  title: Choreo-Connect Interceptor Service
+  description: Interceptor Service
+  version: v1
+  contact:
+    name: WSO2
+    url: http://wso2.com/products/api-manager/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: interceptor
+    description: Interceptor
+paths:
+  "/handle-request":
+    post:
+      tags:
+        - Request
+      summary: Handle Request
+      operationId: handleRequest
+      requestBody:
+        description: Content of the request
+        content:
+          application/json: {}
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json: {}
+  "/handle-response":
+    post:
+      tags:
+        - Response
+      summary: Handle Response
+      operationId: handleResponse
+      requestBody:
+        description: Content of the request
+        content:
+          application/json: {}
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json: {}
