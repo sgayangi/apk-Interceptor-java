@@ -23,8 +23,7 @@ The interceptor performs the following actions:
    kubectl apply -f .
    ```
 
-3. **Configure the Interceptor in `api-policy.yaml`:**
-   In the `api-policy.yaml` file, configure the interceptor as follows:
+   In the `api-policy.yaml` file, we have configured the interceptor as follows:
    ```yaml
    apiVersion: dp.wso2.com/v1alpha2
    kind: APIPolicy
@@ -41,24 +40,29 @@ The interceptor performs the following actions:
        kind: Gateway
        name: wso2-apk-default
    ```
-   This configuration ensures that the interceptor is applied to all APIs deployed in the gateway.
+   The interceptor is configured to operate at the gateway level due to the following lines in the api-policy.yaml file:
+   ```yaml
+   kind: Gateway
+   name: wso2-apk-default
+   ```
+   This configuration ensures that the interceptor is applied globally to all APIs deployed within the specified gateway
 
 4. **Testing the Interceptor Service:**
-   You can use any API to test the interceptor, as it is a global interceptor. Alternatively, use the sample API provided in this documentation.
+   You can use any API to test the interceptor, as it is a global interceptor. Alternatively, you can use the sample API provided in this documentation.
 
-5. **Build the Backend Service:**
+   I. ***Build the Backend Service:***
    Run the following script to build the backend image:
    ```bash
    sh ./build-legacy-backend-service.sh
    ```
 
-6. **Deploy the Sample API:**
+   II. ***Deploy the Sample API:***
    Navigate to the `API-Files` directory and deploy the sample API:
    ```bash
    kubectl apply -f .
    ```
 
-7. **Invoke the API:**
+   III. ***Invoke the API:***
    Test the interceptor by invoking the API using:
    ```bash
    curl --location 'https://default.gw.wso2.com:9095/interceptor/1.0.0/books' --header 'Host: default.gw.wso2.com' --data '{"SamplePayload":"WSO2 APK"}' -k
@@ -66,7 +70,7 @@ The interceptor performs the following actions:
 
 ## Developing the Interceptor Service
 
-In this example, the interceptor service is generated using the following OpenAPI definition:
+In this example, the interceptor service is generated using the [swagger-codegen](https://github.com/swagger-api/swagger-codegen) with following OpenAPI definition:
 
 ```yaml
 openapi: 3.0.0
@@ -122,7 +126,7 @@ paths:
             application/json: {}
 ```
 
-Save this definition as `interceptor-service-open-api.yaml` and run the following command to generate the interceptor service source code:
+Save this definition as `interceptor-service-open-api.yaml` and run the following command to generate the interceptor service source code using swagger-codegen:
 
 ```bash
 swagger-codegen generate -i ./interceptor-service-open-api.yaml -l spring -o ./interceptors-java
