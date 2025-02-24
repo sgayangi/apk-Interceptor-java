@@ -13,8 +13,8 @@ The interceptor performs the following actions:
 
 1. **Clone the Repository:**
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/SameeraSI/apk-Interceptor-java.git
+   cd apk-Interceptor-java
    ```
 
 2. **Apply the Interceptor:**
