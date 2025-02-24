@@ -147,7 +147,7 @@ sh ./build-interceptor-service.sh
 ```
 
 ### Apply the Interceptor
-Finally, navigate back to the `Interceptor-Files` and apply the interceptor again:
+Finally, navigate back to the `Interceptor-Files` and apply the interceptor:
 ```bash
 kubectl apply -f .
 ```
