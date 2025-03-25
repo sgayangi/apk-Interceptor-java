@@ -21,8 +21,8 @@ metadata:
 spec:
   protocol: http
   services:
-  - host: interceptor-svc.interceptor
-    port: 8443
+    - host: interceptor-svc.interceptor
+      port: 8443
   tls:
     secretRef:
       name: interceptor-cert
@@ -62,10 +62,15 @@ spec:
           name: interceptor-container
           ports:
             - containerPort: 8443
+          env:
+            - name: allowedAudience
+              value: '["aud1", "aud2"]'
+            - name: introspectURL
+              value: "https://custom-introspect-url.com"
           volumeMounts:
-          - name: interceptor-certs-vol
-            mountPath: /usr/src/app/certs
+            - name: interceptor-certs-vol
+              mountPath: /usr/src/app/certs
       volumes:
         - name: interceptor-certs-vol
-          secret: 
+          secret:
             secretName: interceptor-cert
