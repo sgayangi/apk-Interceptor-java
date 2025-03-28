@@ -1,5 +1,6 @@
 package io.swagger.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +46,7 @@ public class HandleRequestApiController implements HandleRequestApi {
         List<String> allowedAudience = null;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            allowedAudience = objectMapper.readValue(allowedAudienceStr, new TypeReference<List<String>>() {
+                allowedAudience = objectMapper.readValue(allowedAudienceStr, new TypeReference<List<String>>() {
             });
         } catch (Exception e) {
             System.err.println("error in list: " + e.getMessage());
@@ -52,6 +54,33 @@ public class HandleRequestApiController implements HandleRequestApi {
 
         System.out.println(allowedAudience);
         System.out.println(introspectURL);
+
+        // Logic to detect the unacceptable scenario
+        if (allowedAudience.contains("aud1")) {
+            Map<String, Object> response = new HashMap<>();
+
+            // Prevents the body from being passed to the backend
+            response.put("directRespond", true);
+
+            // The response body for an error scenario
+            Map<String, String> errorResponseBody = new HashMap<>();
+            errorResponseBody.put("Status Code", "403");
+            errorResponseBody.put("Error Message", "You are forbidden from accessing this resource due to invalid permissions");
+
+            // Convert the JSON to a string for the encoding done later
+            String jsonResponse = null;
+            try {
+                jsonResponse = objectMapper.writeValueAsString(errorResponseBody);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+            // The body sent from the interceptoe needs to be base64 encoded
+            String encodedResponse = Base64.getEncoder().encodeToString(jsonResponse.getBytes());
+            response.put("body", encodedResponse);
+
+            return ResponseEntity.status(200).body(response);
+        }
 
         // return new ResponseEntity<Void>(responseBody, HttpStatus.OK);
         // return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
