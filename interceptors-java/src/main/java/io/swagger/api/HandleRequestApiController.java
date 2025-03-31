@@ -46,7 +46,7 @@ public class HandleRequestApiController implements HandleRequestApi {
         List<String> allowedAudience = null;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-                allowedAudience = objectMapper.readValue(allowedAudienceStr, new TypeReference<List<String>>() {
+            allowedAudience = objectMapper.readValue(allowedAudienceStr, new TypeReference<List<String>>() {
             });
         } catch (Exception e) {
             System.err.println("error in list: " + e.getMessage());
@@ -78,6 +78,9 @@ public class HandleRequestApiController implements HandleRequestApi {
             // The body sent from the interceptoe needs to be base64 encoded
             String encodedResponse = Base64.getEncoder().encodeToString(jsonResponse.getBytes());
             response.put("body", encodedResponse);
+
+            // This is the status code that will be returned to the client from the gateway
+            response.put("responseCode", 403);
 
             return ResponseEntity.status(200).body(response);
         }
