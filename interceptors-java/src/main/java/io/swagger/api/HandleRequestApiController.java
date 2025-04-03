@@ -12,12 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
+import org.json.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2025-02-23T23:20:12.397998+05:30[Asia/Colombo]")
 @RestController
 public class HandleRequestApiController implements HandleRequestApi {
@@ -39,6 +37,30 @@ public class HandleRequestApiController implements HandleRequestApi {
         Map<String, String> headersToAdd = new HashMap<>();
         headersToAdd.put("x-user", "admin");
         responseBody.put("headersToAdd", headersToAdd);
+
+        StringBuilder requestBody = new StringBuilder();
+
+        // Access the authorization token from the request body's invocation context
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading request body: " + e.getMessage());
+            return null;
+        }
+
+        try {
+            JSONObject json = new JSONObject(requestBody.toString());
+            JSONObject invocationContext = json.getJSONObject("invocationContext");
+            JSONObject authenticationContext = invocationContext.getJSONObject("authenticationContext");
+            System.out.println(authenticationContext.getString("token"));
+        } catch (Exception e) {
+            System.out.println("Error parsing JSON: " + e.getMessage());
+            return null;
+        }
+
 
         String allowedAudienceStr = System.getenv("allowedAudience");
         String introspectURL = System.getenv("introspectURL");
